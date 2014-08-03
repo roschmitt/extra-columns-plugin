@@ -41,8 +41,7 @@ import java.lang.StringBuilder;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
-import java.io.FileReader;
-//import java.io.IOException;
+import java.io.IOException;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -80,7 +79,7 @@ public class ContentFromArtifactColumn extends ListViewColumn {
         return forceWidth;
     }
 
-    public String getArtifactContent(@SuppressWarnings("rawtypes") Job job) /*throws IOException*/ {
+    public String getArtifactContent(@SuppressWarnings("rawtypes") Job job) throws IOException {
         if (job == null || job.getLastCompletedBuild().getHasArtifacts() == false) {
           return "unavail";
         }
