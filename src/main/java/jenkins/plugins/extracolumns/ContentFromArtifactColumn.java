@@ -37,9 +37,12 @@ import java.util.List;
 import jenkins.model.ArtifactManager;
 import jenkins.util.VirtualFile;
 
+import java.lang.StringBuilder;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.IOException;
+//import java.io.IOException;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -77,47 +80,23 @@ public class ContentFromArtifactColumn extends ListViewColumn {
         return forceWidth;
     }
 
-    public String getArtifactContent(@SuppressWarnings("rawtypes") Job job) throws IOException {
+    public String getArtifactContent(@SuppressWarnings("rawtypes") Job job) /*throws IOException*/ {
         if (job == null || job.getLastCompletedBuild().getHasArtifacts() == false) {
           return "unavail";
         }
-        String str = "unavail";
         Run run = job.getLastCompletedBuild();
-        List <Run.Artifact> artifacts = job.getLastCompletedBuild().getArtifacts();
-        for (Run.Artifact artifact : artifacts) {
-          LOGGER.info("Actual artifact: "+artifact.getFileName()+", requested artifact: "+artifactFileName);
-          if (artifactFileName.equals(artifact.getFileName())) {
-            ArtifactManager am = artifact.getArtifactManager();
-            VirtualFile vf = am.root();
-            if (!vf.isFile()) {
-              return "not a file: "+artifact.getFileName();
-            }
-            if (!vf.canRead()) {
-              return "cannot read: "+artifact.getFileName();
-            }
-            LOGGER.info("vf: "+vf.child(artifact.relativePath));
-            return artifact.relativePath; //TODO: read the file, readFile(artifact.getartifact.getFileName());
-          }
+        ArtifactManager am = run.getArtifactManager();
+        VirtualFile vf = am.root();
+        VirtualFile child = vf.child(artifactFileName);
+        InputStream is = child.open();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder out = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            out.append(line);
         }
-        return str;
-    }
-
-    public String readFile(String fileName) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(fileName));
-        try {
-            String line = br.readLine();
-            LOGGER.info("Read: "+line);
-            if (line != null) {
-                return line.trim();
-            }
-            LOGGER.warning("The first line of the artifact file "+fileName+" was null.");
-            return "First line null in "+fileName;
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE,"Failed to read artifact file "+fileName,e);
-            throw e;
-        } finally {
-            br.close();
-        }
+        reader.close();
+        return out.toString();
     }
 
     @Extension
