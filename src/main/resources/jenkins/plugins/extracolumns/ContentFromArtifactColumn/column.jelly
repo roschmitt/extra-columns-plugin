@@ -27,6 +27,6 @@
   <j:set var="artifactContent" value="${it.getArtifactContent(job)}"/>
   <j:set var="widthAttribute" value="width: ${it.getColumnWidth()}px;word-wrap: break-word;white-space:normal;"/>
   <td  style="${it.isForceWidth() ? widthAttribute : null}">
-    <j:out value="${artifactContent!=null ? app.markupFormatter.translate(artifactContent) : ''}" />
+    <j:out value="${artifactContent}" />
   </td>
 </j:jelly>
