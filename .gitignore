@@ -3,4 +3,4 @@ work
 .classpath
 .project
 .settings
-
+*.swp
