@@ -24,9 +24,9 @@
 
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core">
-  <j:set var="artifactFileContent" value="${it.getArtifactFileContent(job)}"/>
+  <j:set var="artifactContent" value="${it.getArtifactContent(job)}"/>
   <j:set var="widthAttribute" value="width: ${it.getColumnWidth()}px;word-wrap: break-word;white-space:normal;"/>
   <td  style="${it.isForceWidth() ? widthAttribute : null}">
-    <j:out value="${artifactFileContent!=null ? app.markupFormatter.translate(artifactFileContent) : ''}" />
+    <j:out value="${artifactContent!=null ? app.markupFormatter.translate(artifactContent) : ''}" />
   </td>
 </j:jelly>
